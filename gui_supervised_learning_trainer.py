@@ -30,7 +30,7 @@ label_frame_feature_importance = ttk.Labelframe(root, text='Feature importance',
 label_frame_feature_importance.grid(row=0, column=2, sticky='n')
 label_frame_feature_selection = ttk.Labelframe(root, text='Feature selection', width=300, height=350)
 label_frame_feature_selection.grid(row=0, column=3, sticky='n')
-label_frame_feature_SMOTE_scaling = ttk.Labelframe(root, text='SMOTE & scalling', width=300, height=350)
+label_frame_feature_SMOTE_scaling = ttk.Labelframe(root, text='SMOTE & scaling', width=300, height=350)
 label_frame_feature_SMOTE_scaling.grid(row=0, column=4, sticky='n')
 label_frame_hyperparameters = ttk.Labelframe(root, text='Hyperparameters', width=300, height=350)
 label_frame_hyperparameters.grid(row=0, column=5, sticky='n')
@@ -182,11 +182,11 @@ def feature_selection():
         feature = row["Feature"]
         importance = round(row["Importance"], 3)
         tk.Label(label_frame_feature_selection, font="none 7", text=str(index) + " " + str(importance) + " " + feature).grid(row=index + 3, column=0, sticky='w')  # place widget with empty text, will be filled later
-    tk.Button(label_frame_feature_SMOTE_scaling, text='process', command=lambda: SMOTE_scalling()).grid(row=0, column=0, sticky='w')
+    tk.Button(label_frame_feature_SMOTE_scaling, text='process', command=lambda: SMOTE_scaling()).grid(row=0, column=0, sticky='w')
 
-    global checkbox_scalling_var
-    checkbox_scalling_var = tk.BooleanVar(value=True)
-    tk.Checkbutton(label_frame_feature_SMOTE_scaling, text="scalling", variable=checkbox_scalling_var).grid(row=2, column=0, sticky='w')
+    global checkbox_scaling_var
+    checkbox_scaling_var = tk.BooleanVar(value=True)
+    tk.Checkbutton(label_frame_feature_SMOTE_scaling, text="scaling", variable=checkbox_scaling_var).grid(row=2, column=0, sticky='w')
     global checkbox_SMOTE_var
     checkbox_SMOTE_var = tk.BooleanVar()
     tk.Checkbutton(label_frame_feature_SMOTE_scaling, text="SMOTE", variable=checkbox_SMOTE_var).grid(row=3, column=0, sticky='w')
@@ -240,7 +240,7 @@ class Dropdown:
     def get_selected_value(self):
         return self.combo_var.get()
 
-def SMOTE_scalling():
+def SMOTE_scaling():
     """
     Apply SMOTE and scaling to the selected features.
     """
@@ -252,7 +252,7 @@ def SMOTE_scalling():
         y_resampled.value_counts(normalize=True)
     else:
         X_resampled, y_resampled = X_encoded_filtered, y
-    if checkbox_scalling_var.get():
+    if checkbox_scaling_var.get():
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X_resampled)
     else:
