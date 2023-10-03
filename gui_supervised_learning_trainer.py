@@ -45,8 +45,6 @@ label_frame_results_test.grid(row=2, column=6, sticky='n')
 open_button = tk.Button(label_frame_input, text='Open database', command=lambda: OpenFile())
 open_button.grid(row=0, column=0, sticky='nw')
 
-# https://www.kaggle.com/code/michaelcerna/default-prediction-multiple-technique-comparison
-
 #create column selection option
 def create_label_frame_input():
     """
@@ -80,7 +78,7 @@ def OpenFile():
     global data
     name = fd.askopenfilename(initialdir="", filetypes=(("Text File", "*.csv"), ("All Files", "*.*")), title="Choose a file.")
     data = pd.read_csv(name, error_bad_lines=False)
-    # data = data.sample(n=3000, random_state=42).copy()
+    data = data.sample(n=10000, random_state=42).copy()
     list(data.columns)
     column_selection.set(list(data.columns))
     tk.Button(label_frame_dummies, text='process', command=lambda: dummifying()).grid(row=0, column=0, sticky='w')
