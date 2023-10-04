@@ -78,11 +78,16 @@ def OpenFile():
     global data
     name = fd.askopenfilename(initialdir="", filetypes=(("Text File", "*.csv"), ("All Files", "*.*")), title="Choose a file.")
     data = pd.read_csv(name, error_bad_lines=False)
-    data = data.sample(n=10000, random_state=42).copy()
     list(data.columns)
     column_selection.set(list(data.columns))
     tk.Button(label_frame_dummies, text='process', command=lambda: dummifying()).grid(row=0, column=0, sticky='w')
-
+    total_rows = data.shape[0]
+    tk.Label(label_frame_input, font="none 7 bold", text="Total observations: " + str(total_rows)).grid(row=14, column=0, sticky='w')  # place widget with empty text, will be filled late
+    # Create an Entry widget
+    global entry_observations
+    tk.Label(label_frame_input, font="none 7 bold", text="Restict observations (random):").grid(row=15, column=0, sticky='w')
+    entry_observations = tk.Entry(label_frame_input, text="")
+    entry_observations.grid(row=16, column=0, padx=10, pady=10)
 
 
 def clear_label_frame(name_label_frame):
@@ -104,21 +109,33 @@ def dummifying():
     - pd.DataFrame: Used database file.
     - str: Selected column.
     - float: Process time.
-    - int: Rows in the database.
+    - int: Observations in the database.
     - float: Average of the selected column.
     - float: Maximum value of the selected column.
     - float: Minimum value of the selected column.
     """
     clear_label_frame(label_frame_dummies)
+    global data
+    global X
+    global y
+    global X_encoded
+
     try:# checks if there was a column selected
         selection = listbox_columns.get(listbox_columns.curselection())
     except:
         tk.messagebox.showerror("warning", "Select column then Process database")
         return
 
-    global X
-    global y
-    global X_encoded
+    # check if the entry of the restrict observations is correct.
+
+    value = int(entry_observations.get())
+    if value == "":
+        pass
+    if isinstance(value, int) == True:
+        data = data.sample(n=value, random_state=42).copy()
+    else:
+        tk.messagebox.showerror("Insert interger or leave empty")
+        pass
 
     X = data.drop([selection], axis=1)
     y = data[selection]
@@ -126,13 +143,10 @@ def dummifying():
     # Because we are trying to find the most significant correlations with another categorical variable ('Default'), it is very important to ensure we encode our categorical to ensure accurate feature selection.
     # One-hot encode all object (categorical) columns
     X_encoded = pd.get_dummies(X, columns=X.select_dtypes(include=['object']).columns, drop_first=True)
-    total_rows = data.shape[0]
-    # tk.Label(label_frame_dummies, font="none 7 bold", text="Used file: " + str(name)).grid(row=1, column=0, sticky='w') # place widget with empty text, will be filled later o
     tk.Label(label_frame_dummies, font="none 7 bold", text="Target column: " + str(selection)).grid(row=2, column=0, sticky='w') # place widget with empty text, will be filled later o
-    tk.Label(label_frame_dummies, font="none 7 bold", text="Rows: " + str(total_rows)).grid(row=3, column=0, sticky='w')  # place widget with empty text, will be filled later
     tk.Label(label_frame_dummies, font="none 7 bold", text="Dummyfied columns:").grid(row=4, column=0, sticky='w')  # place widget with empty text, will be filled later
-    row_number = 5
 
+    row_number = 8
     for dummy in X.select_dtypes(include=['object']):
         tk.Label(label_frame_dummies, font="none 7", text=str(dummy)).grid(row=row_number, column=0,sticky='w') # place widget with empty text, will be filled later
         row_number = row_number + 1
@@ -169,6 +183,20 @@ def feature_selection():
     """
     Perform feature selection based on the specified importance threshold.
     """
+
+
+    # value = entry_observations.get()
+    # if value == "":
+    #     result_label_observations.config(text="Please enter an integer.")
+    # else:
+    #     result_label_observations.config(text=f"Entered value: {value}")
+    #
+    # try:# checks if there was a column selected
+    #     selection = listbox_columns.get(listbox_columns.curselection())
+    # except:
+    #     tk.messagebox.showerror("warning", "Select column then Process database")
+    #     return
+
     value_selection = float(default_value_selection.get())
     clear_label_frame(label_frame_feature_selection)
     df_selection = importance_df[importance_df['Importance'] > value_selection]
