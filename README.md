@@ -1,7 +1,9 @@
 # gui_supervised_learing_trainer
 This Python script provides a graphical user interface (GUI) for performing supervised learning tasks using various classifiers. It utilizes the tkinter library for creating the GUI, and scikit-learn, XGBoost, and imbalanced-learn for machine learning functionalities
 
+![image](https://github.com/JeroenKreuk/gui_supervised_learing_trainer/assets/85551796/938c55a8-666e-4490-9a84-37d462958480)
 
+![image](https://github.com/JeroenKreuk/gui_supervised_learing_trainer/assets/85551796/dba67d5c-9192-4594-97b3-128b7d9dbcab)
 
 
 
